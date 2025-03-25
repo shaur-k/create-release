@@ -1,5 +1,8 @@
 name:  'Create Release Webhook'
 description: 'Create a release webhook for a GitHub repository'
+branding:
+  icon: 'check-square'
+  color: 'purple'
 inputs:
   auth_token:
     description: 'GitHub token with repo:write scope'
