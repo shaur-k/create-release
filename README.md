@@ -9,10 +9,8 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
       - name: Create release
-        uses: shaur-k/create-release@v1
+        uses: shaur-k/create-release@v0.1.1
         with:
           auth_token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ github.repository_owner }}
