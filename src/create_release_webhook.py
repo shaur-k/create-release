@@ -22,9 +22,9 @@ def require_env(input : str, default : Union[str, bool, None]) -> str | bool:
     """
     Raises a ValueError if the environment variable is not set or no default is passed.
     """
-    if input == 'INPUT_NAME' and default == "":
-        default = require_env('INPUT_TAG_NAME', None)
     value = os.environ.get(input) or default
+    if input == 'INPUT_NAME' and value == "":
+        default = require_env('INPUT_TAG_NAME', None)
     if value is None:
         raise ValueError(f'{input} is required')
     return value
