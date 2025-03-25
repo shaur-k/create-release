@@ -1,5 +1,5 @@
 from enum import verify
-from typing_extensions import Dict, Union
+from typing import Dict, Union
 from _pytest.python_api import raises
 from src.create_release_webhook import (
     get_inputs,

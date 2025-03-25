@@ -13,7 +13,6 @@ Creates the release via a webhook, taking in inputs via the action.
 @param make_latest: Boolean for making the release the latest release. Cannot be set if prerelease or draft is true
 """
 import json
-from typing_extensions import Tuple
 import requests
 import os
 from typing import Dict, Union
