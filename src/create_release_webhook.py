@@ -18,13 +18,15 @@ import requests
 import os
 from typing import Dict, Union
 
-def require_env(name : str, default : Union[str, bool, None]) -> str | bool:
+def require_env(input : str, default : Union[str, bool, None]) -> str | bool:
     """
     Raises a ValueError if the environment variable is not set or no default is passed.
     """
-    value = os.environ.get(name) or default
+    if input == 'INPUT_NAME' and default == "":
+        default = require_env('INPUT_TAG_NAME', None)
+    value = os.environ.get(input) or default
     if value is None:
-        raise ValueError(f'{name} is required')
+        raise ValueError(f'{input} is required')
     return value
 
 KEYS_TO_DEFAULTS: Dict[str, Union[str, bool, None]] = {
@@ -33,7 +35,7 @@ KEYS_TO_DEFAULTS: Dict[str, Union[str, bool, None]] = {
     'INPUT_REPO': None,
     'INPUT_TAG_NAME': None,
     'INPUT_TARGET_COMMITISH': None,
-    'INPUT_NAME': None,
+    'INPUT_NAME': "",
     'INPUT_BODY': "",
     'INPUT_DRAFT': False,
     'INPUT_PRERELEASE': False,
