@@ -1,0 +1,39 @@
+name:  'Create Release Webhook'
+description: 'Create a release webhook for a GitHub repository'
+inputs:
+  auth_token:
+    description: 'GitHub token with repo:write scope'
+    required: true
+  owner:
+    description: 'GitHub owner of the repository'
+    required: true
+  repo:
+    description: 'GitHub repository name'
+    required: true
+  tag_name:
+    description: 'GitHub tag name'
+    required: true
+  target_commitish:
+    description: 'GitHub target commitish'
+    required: true
+  name:
+    description: 'GitHub release name'
+    required: true
+  body:
+    description: 'GitHub release body'
+    required: true
+  draft:
+    description: 'GitHub release draft'
+    required: false
+  prerelease:
+    description: 'GitHub release prerelease'
+    required: false
+  generate_release_notes:
+    description: 'GitHub release generate release notes'
+    required: false
+  make_latest:
+    description: 'GitHub release make latest'
+    required: false
+runs:
+  using: docker
+  image: Dockerfile
