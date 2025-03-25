@@ -34,7 +34,7 @@ KEYS_TO_DEFAULTS: Dict[str, Union[str, bool, None]] = {
     'INPUT_TAG_NAME': None,
     'INPUT_TARGET_COMMITISH': None,
     'INPUT_NAME': None,
-    'INPUT_BODY': None,
+    'INPUT_BODY': "",
     'INPUT_DRAFT': False,
     'INPUT_PRERELEASE': False,
     'INPUT_GENERATE_RELEASE_NOTES': False,
