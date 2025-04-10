@@ -6,4 +6,4 @@ COPY requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt && \
     chmod +x /create_release_webhook.py
 
-CMD ["python", "create_release_webhook.py"]
+CMD ["python", "/create_release_webhook.py"]
