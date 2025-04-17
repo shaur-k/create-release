@@ -8,6 +8,7 @@ from src.create_release_webhook import (
     require_env,
     create_payload,
     create_release,
+    IS_BOOL
 )
 import pytest
 from unittest import mock
@@ -18,14 +19,14 @@ def make_mock_config():
         'INPUT_AUTH_TOKEN': "test_token",
         'INPUT_OWNER': "test_owner",
         'INPUT_REPO': "test_repo",
-        'INPUT_TAG_NAME': "test_tag",
+        'INPUT_TAG_NAME': "",
         'INPUT_TARGET_COMMITISH': "test_commitish",
         'INPUT_NAME': "test_name",
         'INPUT_BODY': "test_body",
-        'INPUT_DRAFT': False,
-        'INPUT_PRERELEASE': False,
-        'INPUT_GENERATE_RELEASE_NOTES': False,
-        'INPUT_MAKE_LATEST': True
+        'INPUT_DRAFT': "false",
+        'INPUT_PRERELEASE': "false",
+        'INPUT_GENERATE_RELEASE_NOTES': "false",
+        'INPUT_MAKE_LATEST': "true"
     }
     with mock.patch.dict('src.create_release_webhook.KEYS_TO_DEFAULTS', mock_config):
         return make_config()
@@ -45,6 +46,17 @@ def test_require_env(should_pass):
     else:
         with pytest.raises(Exception):
             require_env(name, mocked_value)
+
+@pytest.mark.parametrize("field", IS_BOOL)
+def test_require_env_bool(field):
+    name = field
+    mocked_value = "true"
+    assert require_env(name, mocked_value) is True
+    mocked_value = "false"
+    assert require_env(name, mocked_value) is False
+    mocked_value = None
+    with pytest.raises(Exception):
+        require_env(name, mocked_value)
 
 @pytest.mark.parametrize(
     "is_latest, is_prerelease, is_draft, should_pass",
@@ -86,7 +98,7 @@ def test_get_inputs(is_latest, is_prerelease, is_draft, should_pass):
     if is_prerelease is not None:
         inputs['prerelease'] = is_prerelease
     if is_latest is not None:
-        inputs['make_latest'] = is_latest
+        inputs['make_latest'] = str(is_latest).lower()
     if should_pass:
         assert verify_inputs(inputs)
     else:

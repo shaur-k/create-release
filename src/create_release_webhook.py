@@ -15,20 +15,26 @@ Creates the release via a webhook, taking in inputs via the action.
 import json
 import requests
 import os
-from typing import Dict, Union
+from typing import Dict, Union, List
 
-def require_env(input : str, default : Union[str, bool, None]) -> str | bool:
+def require_env(input : str, default : Union[str, None]) -> str | bool:
     """
     Raises a ValueError if the environment variable is not set or no default is passed.
     """
-    value = os.environ.get(input) or default
-    if input == 'INPUT_NAME' and value == "":
-        default = require_env('INPUT_TAG_NAME', None)
-    if value is None:
+    init_value = os.environ.get(input) or default
+    if input == 'INPUT_NAME' and init_value == "":
+        value = require_env('INPUT_TAG_NAME', None)
+    if init_value is None:
         raise ValueError(f'{input} is required')
+    if input in IS_BOOL:
+        value = True if init_value.lower() == 'true' else False
+    else:
+        value = init_value
     return value
 
-KEYS_TO_DEFAULTS: Dict[str, Union[str, bool, None]] = {
+IS_BOOL: List[str] = ['INPUT_DRAFT', 'INPUT_PRERELEASE', 'INPUT_GENERATE_RELEASE_NOTES']
+
+KEYS_TO_DEFAULTS: Dict[str, Union[str, None]] = {
     'INPUT_AUTH_TOKEN': None,
     'INPUT_OWNER': None,
     'INPUT_REPO': None,
@@ -36,10 +42,10 @@ KEYS_TO_DEFAULTS: Dict[str, Union[str, bool, None]] = {
     'INPUT_TARGET_COMMITISH': None,
     'INPUT_NAME': "",
     'INPUT_BODY': "",
-    'INPUT_DRAFT': False,
-    'INPUT_PRERELEASE': False,
-    'INPUT_GENERATE_RELEASE_NOTES': False,
-    'INPUT_MAKE_LATEST': True
+    'INPUT_DRAFT': "false",
+    'INPUT_PRERELEASE': "false",
+    'INPUT_GENERATE_RELEASE_NOTES': "false",
+    'INPUT_MAKE_LATEST': "true"
 }
 
 def make_config() -> Dict[str, Union[str, bool]]:
@@ -70,8 +76,9 @@ def verify_inputs(inputs : Dict[str, Union[str, bool]]) -> bool:
     """
     Verifies the inputs and raises an error if they are invalid.
     """
-    if inputs['make_latest'] and (inputs['prerelease'] or inputs['draft']):
+    if (inputs['make_latest'] == "true" or inputs['make_latest'] == "legacy") and (inputs['prerelease'] or inputs['draft']):
         raise ValueError('Cannot make a release the latest if it is a prerelease or draft')
+    print(inputs)
     return True
 
 def create_payload(inputs) -> Dict[str, Union[str, bool, None]]:
